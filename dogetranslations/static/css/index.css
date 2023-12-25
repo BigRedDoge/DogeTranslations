@@ -1,0 +1,23 @@
+
+.view-series {
+    color: #fff;
+    text-decoration: none;
+    background-color: #d4d4d4;
+    
+}
+
+.view-series:hover {
+    background-color: #fff;
+    color: #000;
+    text-decoration: none;
+}
+
+.view-series button {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+
