@@ -1,14 +1,24 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
-from .models import Post, Series, Book
+from .models import Post, Series, Book, WebNovel, Chapter
+from django.views.generic import ListView, DetailView
+from django.contrib.auth.decorators import user_passes_test, login_required
+from django.utils.text import slugify
 
 
 # Create your views here.
-class SeriesList(generic.ListView):
+class TranslationsList(ListView):
     queryset = Series.objects.order_by('-created_on')
-    template_name = 'index.html'
+    template_name = 'translations.html'
 
-class SeriesDetail(generic.DetailView):
+def home(request):
+    active_series = []
+    for series in Series.objects.all():
+        if Book.objects.filter(series=series, active=True).exists():
+            active_series.append(series)
+    return render(request, 'index.html', {'series_list': active_series})
+
+class SeriesDetail(DetailView):
     model = Series
     template_name = 'series_detail.html'
 
@@ -55,3 +65,34 @@ class PostDetail(generic.DetailView):
         series = get_object_or_404(Series, slug=self.kwargs['series_slug'])
         book = get_object_or_404(Book, series=series, book_slug=self.kwargs['book_slug'])
         return get_object_or_404(Post, book_id=book, post_slug=self.kwargs['post_slug'])
+    
+
+def web_novel_detail(request, web_novel_slug):
+    web_novel = get_object_or_404(WebNovel, novel_slug=web_novel_slug)
+    chapters = Chapter.objects.filter(web_novel=web_novel)
+    return render(request, 'web_novel_detail.html', {'web_novel': web_novel, 'chapters': chapters})
+
+
+def web_novel_chapter(request, web_novel_slug, chapter_slug):
+    web_novel = get_object_or_404(WebNovel, novel_slug=web_novel_slug)
+    chapter = get_object_or_404(Chapter, web_novel=web_novel, chapter_slug=chapter_slug)
+    return render(request, 'chapter.html', {'chapter': chapter})
+
+
+@login_required
+@user_passes_test(lambda user: user.is_editor)
+def add_web_novel(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        description = request.POST['description']
+        author = request.user
+        web_novel = WebNovel(title=title, description=description, author=author)
+        web_novel.save()
+        return render(request, 'add_web_novel.html', {'success': True, 'web_novel': web_novel})
+    return render(request, 'add_web_novel.html')
+
+
+@login_required
+@user_passes_test(lambda user: user.is_editor)
+def translate(request):
+    pass
