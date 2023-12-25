@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% block content %}
+{% include 'navbar.html' %}
+<div class="main-container">
+    <div class="container bg-white rounded shadow pb-5">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="display-5 my-4 text-center">{{ series.title }}</h1>
+                <hr class="my-4">
+            </div>
+        </div>
+        <div class="row px-5 d-flex flex-row">
+            {% for book in books %}
+                <div class="card mb-4 mt-3" style="width: 20em;">
+                    <img class="card-img-top img-fluid" src="{{ book.image.url }}" alt="Book image">
+                    <div class="card-body d-flex flex-column">
+                        <h1 class="text-center fs-2">{% block title %} {{ book.title }} {% endblock title %}</h1>
+                        <a href="{% url 'book_detail' series_slug=book.series.series_slug book_slug=book.book_slug  %}" class="btn btn-primary">Read Book &rarr;</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% include 'footer.html' %}
+{% endblock %}

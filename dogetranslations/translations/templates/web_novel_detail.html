@@ -1,0 +1,35 @@
+{% extends 'base.html' %} 
+{% block title %}{{ web_novel.title }}{% endblock title %}
+{% block content %}
+{% include 'navbar.html' %}
+<div class="main-container">
+    <div class="container bg-white">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="display-5 my-4 text-center">{{ web_novel.title }}</h1>
+                <hr class="my-4">
+            </div>
+            <div class="col-md-4">
+                <img src="{{ web_novel.image }}" class="img-fluid" alt="{{ web_novel.title }}">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <p class="text-center">{{ web_novel.description }}</p>
+                <p> <strong>Translator:</strong> {{ web_novel.author }}</p>
+                <p> Updated on: {{ web_novel.updated_on }}</p>
+            </div>
+        </div>
+        <div class="row px-5 d-flex flex-row">
+            {% for chapter in chapters %}
+                <div class="card">
+                    <div class="card-title">
+                        {{ chapter.title }}
+                    </div>
+                </div> 
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% include 'footer.html' %}
+{% endblock content %}
